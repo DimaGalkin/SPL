@@ -1,0 +1,12 @@
+{
+    "structure" : {
+        "ST" : {
+            "length" : 3,
+            "struct" : "INST/REG/ROI"
+        }
+    },
+
+    "instructions" : [
+        "ST"
+    ]
+}
