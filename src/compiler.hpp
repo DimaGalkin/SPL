@@ -45,8 +45,7 @@ const std::map<std::string, RegisterCode> register_codes = {
     {"b", RegisterCode("b", "00011", "00010")},
     {"c", RegisterCode("c", "01000", "00111")},
     {"acc", RegisterCode("acc", "N_ALWD", "00100")},
-    {"num", RegisterCode("num", "00100", "00011")},
-    {"mar", RegisterCode("mar", "00111", "N_ALWD")},
+    {"flgs", RegisterCode("flgs", "N_ALWD", "00101")},
     {"lgc", RegisterCode("lgc", "N_ALWD", "01000")},
 };
 
@@ -70,8 +69,6 @@ class SCompiler {
             {"b", Register(REG, "b")},
             {"c", Register(REG, "c")},
             {"acc", Register(REG, "acc")},
-            {"num", Register(REG, "num")},
-            {"mar", Register(REG, "mar")},
             {"flgs", Register(REG, "flgs")},
             {"lgc", Register(REG, "lgc")},
         };

@@ -36,6 +36,7 @@ Errors SCompiler::load_file(const std::string file_name) {
     std::ifstream file (file_name);
 
     if (!file.is_open()) {
+        std::cout << "File not found: " << file_name << '\n';
         return file_not_found;
     }
 
@@ -113,7 +114,7 @@ TKCptr SCompiler::make_token(Instruction inst, const std::string arg, const std:
     } else {
         bool valid_reg = is_valid_reg(arg);
         bool valid_imm = false;
-        
+
         if (!valid_reg) {
             valid_imm = is_valid_imm(arg);
         }
