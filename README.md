@@ -44,7 +44,7 @@
 
 > **`JE [REG16/IMM16]`** - jumps to the memory address in the register or the immediate if the previous **`CMP`** instruction was equal
 
-> **`JE [REG16/IMM16]`** - jumps to the memory address in the register or the immediate if the previous **`CMP`** instruction was not equal
+> **`JNE [REG16/IMM16]`** - jumps to the memory address in the register or the immediate if the previous **`CMP`** instruction was not equal
 
 > **`HLT`** - stops the clock, the cpu stops
 
