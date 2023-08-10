@@ -76,7 +76,7 @@ class SCompiler {
         std::vector<std::string> lines;
         std::vector<TKptr> tokens;
         std::string output;
-        OutputTypes output_type = FULL_SINGLE_WORD;
+        OutputTypes output_type = HALF_DUAL_WORD;
 
     public:
 
