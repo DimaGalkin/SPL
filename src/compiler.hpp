@@ -63,6 +63,8 @@ struct Token {
 
     std::vector<TKCptr> children_;
 
+    Token() = delete;
+
     Token(Instructions type, std::vector<TKCptr> children) {
         type_ = type;
         children_ = children;
@@ -73,7 +75,10 @@ struct Token {
 using TKptr = std::shared_ptr<Token>;
 
 struct Register : public Token_Child {
-    Register(Types type, std::string name) {
+
+    Register() = delete;
+
+    Register(Types type, const std::string& name) {
         type_ = type;
         name_ = name;
     }
@@ -81,7 +86,10 @@ struct Register : public Token_Child {
 using REGptr = std::shared_ptr<Register>;
 
 struct Immediate : public Token_Child {
-    Immediate(Types type, std::string value) {
+
+    Immediate() = delete;
+
+    Immediate(Types type, const std::string& value) {
         type_ = type;
         value_ = value;
     }
@@ -90,7 +98,7 @@ using IMMptr = std::shared_ptr<Immediate>;
 
 struct InstructionCode {
     public:
-        virtual std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) = 0;
+        virtual std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) = 0;
         virtual ~InstructionCode() = default;
 };
 using InstPtr = std::shared_ptr<InstructionCode>;
@@ -100,7 +108,9 @@ struct RegisterCode {
     std::string from_bus_;
     std::string to_bus_;
 
-    RegisterCode(std::string name, std::string from_bus, std::string to_bus) {
+    RegisterCode() = delete;
+
+    RegisterCode(const std::string& name, const std::string& from_bus, const std::string& to_bus) {
         name_ = name;
         from_bus_ = from_bus;
         to_bus_ = to_bus;
@@ -114,7 +124,9 @@ struct Instruction {
     std::vector<Types> child_types_;
     Instructions type_;
 
-    Instruction(std::string name, int children, std::vector<Types> child_types, Instructions type) {
+    Instruction() = delete;
+
+    Instruction(const std::string& name, int children, std::vector<Types> child_types, Instructions type) {
         name_ = name;
         children_ = children;
         child_types_ = child_types;
@@ -163,34 +175,34 @@ class SCompiler {
         std::string output_;
         OutputTypes output_type_;
 
-        Errors load_file(const std::string file_name);
+        Errors load_file(const std::string& file_name);
         Errors parse_file();
         Errors parse_tree();
         Errors write_file();
-        Errors locate_instruction(const std::string inst_name);
+        Errors locate_instruction(const std::string& inst_name);
     
-        TKCptr make_token(Instruction inst, const std::string reg, const std::string imm, const int token_num);
+        TKCptr make_token(Instruction inst, const std::string& reg, const std::string& imm, const int token_num);
         InstPtr get_instruction_struct(const Instructions& inst);
         
-        void split (std::string str, const std::string delim, std::vector<std::string>& out);
+        void split (std::string str, const std::string& delim, std::vector<std::string>& out);
 
-        bool is_valid_reg(const std::string reg);
-        bool is_valid_imm(const std::string imm);
+        bool is_valid_reg(const std::string& reg);
+        bool is_valid_imm(const std::string& imm);
     public:
         // TODO: Set most methods to private;
         SCompiler() {
             output_type_ = HALF_DUAL_WORD;
         };
 
-        static std::string htos(const std::string hex_value);
-        bool set_output(const std::string format);
-        int compile(const std::string file_name);
+        static std::string htos(const std::string& hex_value);
+        bool set_output(const std::string& format);
+        int compile(const std::string& file_name);
 
         ~SCompiler() = default;
 };
 
 struct MOV_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         if (first == REG && second == REG) {
             return "0000" + register_codes.at(first_val).from_bus_ + register_codes.at(second_val).to_bus_ + "00\n";
         } else if (first == REG && second == IMM) {
@@ -204,7 +216,7 @@ struct MOV_Inst : public InstructionCode {
 };
 
 struct HLT_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         return SCompiler::htos("0x7C") + "\n";
     }
 
@@ -212,7 +224,7 @@ struct HLT_Inst : public InstructionCode {
 };
 
 struct WR_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         // load address into mar (from imm or from reg)
         std::string mar_code = "";
         std::string wr_code = "";
@@ -232,7 +244,7 @@ struct WR_Inst : public InstructionCode {
 };
 
 struct RD_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         // load address into mar (from imm or from reg)
         std::string mar_code = "";
         std::string rd_code = "";
@@ -252,7 +264,7 @@ struct RD_Inst : public InstructionCode {
 };
 
 struct EXEC_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         // load address into mar (from imm or from reg)
         std::string mar_code = "";
         std::string rd_code = "";
@@ -272,7 +284,7 @@ struct EXEC_Inst : public InstructionCode {
 };
 
 struct ADD_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         std::string first_int = "";
         std::string second_int = "";
 
@@ -295,7 +307,7 @@ struct ADD_Inst : public InstructionCode {
 };
 
 struct SUB_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         std::string first_int = "";
         std::string second_int = "";
 
@@ -318,7 +330,7 @@ struct SUB_Inst : public InstructionCode {
 };
 
 struct JMP_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         std::string code = "";
 
         if (first == REG) {
@@ -334,7 +346,7 @@ struct JMP_Inst : public InstructionCode {
 };
 
 struct COMP_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         std::string first_int = "";
         std::string second_int = "";
 
@@ -358,7 +370,7 @@ struct COMP_Inst : public InstructionCode {
 };
 
 struct JE_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         std::string code = "";
 
         if (first == REG) {
@@ -374,7 +386,7 @@ struct JE_Inst : public InstructionCode {
 };
 
 struct JNE_Inst : public InstructionCode {
-    std::string get_code(const Types first, const Types second, const std::string first_val, const std::string second_val) override {
+    std::string get_code(const Types first, const Types second, const std::string& first_val, const std::string& second_val) override {
         std::string code = "";
 
         if (first == REG) {

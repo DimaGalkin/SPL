@@ -1,6 +1,6 @@
 #include "compiler.hpp"
 
-bool SCompiler::set_output(std::string format) {
+bool SCompiler::set_output(const std::string& format) {
     if (format == "D8") {
         output_type_ = HALF_DUAL_WORD;
         return true;
@@ -15,7 +15,7 @@ bool SCompiler::set_output(std::string format) {
     return false;
 }
 
-void SCompiler::split(std::string str, std::string const delim, std::vector<std::string>& out) {
+void SCompiler::split(std::string str, const std::string& delim, std::vector<std::string>& out) {
     const size_t delim_len = delim.length();
     size_t pos = 0;
 
@@ -29,8 +29,8 @@ void SCompiler::split(std::string str, std::string const delim, std::vector<std:
     }
 }
 
-Errors SCompiler::load_file(const std::string file_name) {
-    std::ifstream file (file_name);
+Errors SCompiler::load_file(const std::string& file_name) {
+    std::ifstream file { file_name };
 
     if (!file.is_open()) {
         std::cout << "File not found: " << file_name << '\n';
@@ -55,7 +55,7 @@ Errors SCompiler::load_file(const std::string file_name) {
     return OK;
 }
 
-Errors SCompiler::locate_instruction(const std::string inst_name) {
+Errors SCompiler::locate_instruction(const std::string& inst_name) {
     for (const auto& [name, _] : instructions_) {
         if (name == inst_name) {
             return OK;
@@ -65,7 +65,7 @@ Errors SCompiler::locate_instruction(const std::string inst_name) {
     return invalid_instruction;
 }
 
-bool SCompiler::is_valid_reg(const std::string reg) {
+bool SCompiler::is_valid_reg(const std::string& reg) {
     for (const auto& [name, _] : registers_) {
         if (name == reg) {
             return true;
@@ -75,7 +75,7 @@ bool SCompiler::is_valid_reg(const std::string reg) {
     return false;
 }
 
-bool SCompiler::is_valid_imm(const std::string imm) {
+bool SCompiler::is_valid_imm(const std::string& imm) {
     if (imm[0] != '0' || imm[1] != 'x') {
         std::cout << "Immediate value must be in hex format (starting with 0x)" << '\n';
         return false;
@@ -96,7 +96,7 @@ bool SCompiler::is_valid_imm(const std::string imm) {
     return true;
 }
 
-TKCptr SCompiler::make_token(Instruction inst, const std::string arg, const std::string inst_name, const int token_num) {
+TKCptr SCompiler::make_token(Instruction inst, const std::string& arg, const std::string& inst_name, const int token_num) {
     if (inst.child_types_.at(token_num) == REG) {
         if (is_valid_reg(arg)) {
             return std::make_shared<Register>(REG, arg);
@@ -132,7 +132,7 @@ TKCptr SCompiler::make_token(Instruction inst, const std::string arg, const std:
     }
 }
 
-std::string SCompiler::htos(const std::string hex_value) {
+std::string SCompiler::htos(const std::string& hex_value) {
     return std::bitset<16>(std::stoi(hex_value, 0, 16)).to_string();
 }
 
@@ -330,7 +330,7 @@ Errors SCompiler::write_file() {
     return OK;
 }
 
-int SCompiler::compile(const std::string filename) {
+int SCompiler::compile(const std::string& filename) {
     if (load_file(filename) != OK) {
         return 1;
     }
