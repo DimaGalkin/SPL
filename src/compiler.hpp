@@ -48,13 +48,12 @@ enum Instructions {
 };
 
 struct Token_Child {
-    public:
-        Types type_ = NONE;
-        std::string name_ = "";
-        std::string value_ = "";
+    Types type_ = NONE;
+    std::string name_ = "";
+    std::string value_ = "";
 
-        Token_Child() = default;
-        virtual ~Token_Child() = default;
+    Token_Child() = default;
+    virtual ~Token_Child() = default;
 };
 using TKCptr = std::shared_ptr<Token_Child>;
 
